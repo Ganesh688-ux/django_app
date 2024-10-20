@@ -11,28 +11,28 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import dj_database_url
+import os
+import dj_database_url # type: ignore
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(_file_).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7=r!ivhy&=i3@3pal_1v$evp$bo&y%=#66y_+!7ucud(0d0-!='
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG",'False') == True # should be added if Debug is false
 
-#ALLOWED_HOSTS = ['127.0.0.1']
 
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # Add CORS middleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,8 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_app.middleware.CustomHeaderMiddleware',
-
+    'django_app.middleware.LogRequestMiddleware',  # Add custom middleware
+    'django_app.middleware.CustomHeaderMiddleware',  # Add custom middleware
 ]
 
 ROOT_URLCONF = 'django_app.urls'
@@ -88,8 +88,11 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3', #NAME: The name of the database file (for SQLite).
     }
 }
+databaseURL = os.environ.get('DATABASE_URL')
+DATABASES['default'] = dj_database_url.parse(databaseURL) 
 
-DATABASES['default'] = dj_database_url.parse('postgresql://django_db_l3cx_user:On25vpOIs2OuRi4cihHF8SL6LhWYrUvM@dpg-csaa3gbqf0us739rl1o0-a.singapore-postgres.render.com/django_db_l3cx')
+# for loacal
+# DATABASES['default'] = dj_database_url.parase('postgresql://polls_db_ucdy_user:hLlQEtoyUJv2nBivJA1pEnvwtVadEb8i@dpg-csa69qa3esus739pmr30-a.singapore-postgres.render.com/polls_db_ucdy') # This line of code is used to parse the database URL from the environment variable DATABASE_URL. This is useful when you deploy your Django application to Heroku, as Heroku automatically sets the DATABASE_URL environment variable for you. This line of code will parse the database URL and set the default database configuration for your Django application.
 # The above code is the default database configuration that Django uses when you first create a project.
 
 # Password validation
@@ -123,12 +126,20 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,
+    'EXCEPTION_HANDLER': 'django_app.utils.custom_exception_handler',
 }
+
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3000", 
 ]
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG #for dev purpose
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
