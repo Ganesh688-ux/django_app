@@ -1,11 +1,8 @@
 class CustomHeaderMiddleware:
-
-    def _init_(self,get_response):
-        print('CustomHeader _init_ ')
+    def __init__(self, get_response):
         self.get_response = get_response
 
-    def _call_(self, request):
-        print('CustomHeader _call_ ')
+    def __call__(self, request):
         response = self.get_response(request)
-        response['X-Custom-Header'] = 'My Custom Value'
+        response['X-Custom-Header'] = 'My Custom Header'
         return response
