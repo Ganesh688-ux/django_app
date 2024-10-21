@@ -54,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_app.middleware.LogRequestMiddleware',  # Add custom middleware
     'django_app.middleware.CustomHeaderMiddleware',  # Add custom middleware
 ]
 
@@ -92,7 +91,7 @@ databaseURL = os.environ.get('DATABASE_URL')
 DATABASES['default'] = dj_database_url.parse(databaseURL) 
 
 # for loacal
-# DATABASES['default'] = dj_database_url.parase('postgresql://polls_db_ucdy_user:hLlQEtoyUJv2nBivJA1pEnvwtVadEb8i@dpg-csa69qa3esus739pmr30-a.singapore-postgres.render.com/polls_db_ucdy') # This line of code is used to parse the database URL from the environment variable DATABASE_URL. This is useful when you deploy your Django application to Heroku, as Heroku automatically sets the DATABASE_URL environment variable for you. This line of code will parse the database URL and set the default database configuration for your Django application.
+# DATABASES['default'] = dj_database_url.parse('postgresql://polls_db_ucdy_user:hLlQEtoyUJv2nBivJA1pEnvwtVadEb8i@dpg-csa69qa3esus739pmr30-a.singapore-postgres.render.com/polls_db_ucdy') # This line of code is used to parse the database URL from the environment variable DATABASE_URL. This is useful when you deploy your Django application to Heroku, as Heroku automatically sets the DATABASE_URL environment variable for you. This line of code will parse the database URL and set the default database configuration for your Django application.
 # The above code is the default database configuration that Django uses when you first create a project.
 
 # Password validation
